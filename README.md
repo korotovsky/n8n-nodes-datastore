@@ -2,7 +2,7 @@
 
 An n8n node that provides a simple in-memory key-value store. This node is useful for temporarily sharing data between different workflow executions or different parts of the same workflow.
 
-It is no-code solution for [getWorkflowStaticData](https://docs.n8n.io/code/cookbook/builtin/get-workflow-static-data/), Complex round-robin ping-pong via S3 or any similar approach where you tried to achieve any kind of pseudo persistence in your workflows, where you practically required to write JavaScript or integrate complex chains of nodes together in your workflows.
+It is no-code solution for `getWorkflowStaticData()`, Complex round-robin ping-pong via S3 or any similar approach where you tried to achieve any kind of pseudo persistence in your workflows, where you practically required to write JavaScript or integrate complex chains of nodes together in your workflows.
 
 ## Feature demo
 
