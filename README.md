@@ -1,8 +1,8 @@
 # n8n Datastore Node
 
-An n8n node that provides a simple in-memory key-value store. This node is useful for temporarily sharing data between different workflow executions or different parts of the same workflow, as long as they are running within the **same n8n instance and process**. At the moment supports only in-memory store.
+An n8n node that provides a simple in-memory key-value store. This node is useful for temporarily sharing data between different workflow executions or different parts of the same workflow.
 
-It is no-code solution for [getWorkflowStaticData](https://docs.n8n.io/code/cookbook/builtin/get-workflow-static-data/) where you practically required to write JavaScript and you overall lose declarative approach of your workflows.
+It is no-code solution for [getWorkflowStaticData](https://docs.n8n.io/code/cookbook/builtin/get-workflow-static-data/), Complex round-robin ping-pong via S3 or any similar approach where you tried to achieve any kind of pseudo persistence in your workflows, where you practically required to write JavaScript or integrate complex chains of nodes together in your workflows.
 
 ## Feature demo
 
@@ -34,12 +34,7 @@ Later on you will find this node under the name "Datastore" in the modes search 
 ## Important Considerations & Limitations
 
  - **In-Memory Storage**: All data stored using this node resides in the RAM of the n8n process. If n8n is restarted, all data in this store will be lost.
- - **Single Process Scope**: If you are running n8n in a scaled environment with multiple worker processes, this in-memory store will not be shared between these workers. Each worker process will have its own isolated instance of the Datastore.memoryStore. This node is most effective when n8n is running as a single process.
  - **Memory Consumption**: Storing very large amounts of data or a very large number of keys can consume significant server memory. Use with caution for large datasets.
- - **Use Cases: Best suited for**:
-   - Temporary data sharing within a single, complex workflow execution.
-   - Passing small pieces of information between different workflow executions if n8n is running as a single process and restarts are infrequent.
-   - Simple caching mechanisms where data loss on restart is acceptable.
  - **Not a Database Replacement**: For persistent storage, reliable inter-process communication, or robust data management, use a proper database (e.g., PostgreSQL, MySQL, Redis) with its corresponding n8n node.
 
 ## License
