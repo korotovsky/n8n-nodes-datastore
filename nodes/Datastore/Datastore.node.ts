@@ -37,7 +37,7 @@ export class Datastore implements INodeType {
 		if (operation === 'clearAll') {
 			Datastore.memoryStore.clear();
 			if (items.length === 0) {
-				if (outputForSetClear === 'status' || outputForSetClear === 'affectedValue') { // Treat affectedValue like status for clearAll
+				if (outputForSetClear === 'status' || outputForSetClear === 'affectedValue' || outputForSetClear === 'affectedValueOnly') {
 					returnData.push({ json: { success: true, operation: 'clearAll' } });
 				}
 				return [returnData];
@@ -80,6 +80,8 @@ export class Datastore implements INodeType {
 						returnData.push({ json: { success: true, operation: 'set', key: keyName }, pairedItem: { item: i } });
 					} else if (outputForSetClear === 'affectedValue') {
 						returnData.push({ json: { success: true, operation: 'set', value: valueToStore }, pairedItem: { item: i } });
+					} else if (outputForSetClear === 'affectedValueOnly') {
+						returnData.push({ json: { [keyName]: valueToStore }, pairedItem: { item: i } });
 					} else {
 						returnData.push(items[i]);
 					}
@@ -117,11 +119,13 @@ export class Datastore implements INodeType {
 						returnData.push({ json: { success: true, operation: 'clear', key: keyName, cleared }, pairedItem: { item: i } });
 					} else if (outputForSetClear === 'affectedValue') {
 						returnData.push({ json: { operation: 'clear', key: keyName, value: keyExisted ? valueBeforeClear : null, cleared }, pairedItem: { item: i } });
+					} else if (outputForSetClear === 'affectedValueOnly') {
+						returnData.push({ json: { [keyName]: keyExisted ? valueBeforeClear : null }, pairedItem: { item: i } });
 					} else {
 						returnData.push(items[i]);
 					}
 				} else if (operation === 'clearAll') {
-					if (outputForSetClear === 'status' || outputForSetClear === 'affectedValue') { // Treat affectedValue like status for clearAll
+					if (outputForSetClear === 'status' || outputForSetClear === 'affectedValue' || outputForSetClear === 'affectedValueOnly') {
 						returnData.push({ json: { success: true, operation: 'clearAll' }, pairedItem: { item: i } });
 					} else {
 						returnData.push(items[i]);

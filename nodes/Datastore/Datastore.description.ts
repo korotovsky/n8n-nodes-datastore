@@ -124,6 +124,11 @@ export const datastoreNodeFields: INodeProperties[] = [
 				value: 'affectedValue',
 				description: 'Outputs only status, operation and saved value',
 			},
+			{
+				name: 'Output Key-Value',
+				value: 'affectedValueOnly',
+				description: 'Outputs only key-value pair',
+			},
 		],
 		default: 'passThrough',
 		displayOptions: {
