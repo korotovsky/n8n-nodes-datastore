@@ -31,6 +31,18 @@ If this node is not part of the core n8n nodes, follow these steps to install it
 
 Later on you will find this node under the name "Datastore" in the modes search box.
 
+## Addressed issues
+
+- [Keep variables between executions](https://community.n8n.io/t/keep-variables-between-executions/5595)
+- [How to store data as global variable?](https://community.n8n.io/t/how-to-store-data-as-global-variable/27125)
+- [Store values between Executions](https://community.n8n.io/t/store-values-between-executions/23959)
+- [How to store variables based on dynamic data, for use throughout workflow](https://community.n8n.io/t/how-to-store-variables-based-on-dynamic-data-for-use-throughout-workflow/68826/4)
+- [Best way to store global variable in n8n community edition](https://www.reddit.com/r/n8n/comments/1gptv3c/best_way_to_store_global_variable_in_n8n/)
+- [Community edition environments and variables](https://www.reddit.com/r/n8n/comments/18cz4f8/community_edition_environments_and_variables/)
+- [Set a value and update each time the workflow runs](https://community.n8n.io/t/set-a-value-and-update-each-time-the-workflow-runs/35083)
+- [How can I share a variable between two workflows in n8n?](https://community.n8n.io/t/how-can-i-share-a-variable-between-two-workflows-in-n8n/102094)
+- ... :D
+
 ## Important Considerations & Limitations
 
  - **In-Memory Storage**: All data stored using this node resides in the RAM of the n8n process. If n8n is restarted, all data in this store will be lost.
