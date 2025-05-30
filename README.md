@@ -1,45 +1,46 @@
-![Banner image](https://user-images.githubusercontent.com/10284570/173569848-c624317f-42b1-45a6-ab09-f0ea3c247648.png)
+# n8n Datastore Node
 
-# n8n-nodes-starter
+An n8n node that provides a simple in-memory key-value store. This node is useful for temporarily sharing data between different workflow executions or different parts of the same workflow, as long as they are running within the **same n8n instance and process**. At the moment supports only in-memory store.
 
-This repo contains example nodes to help you get started building your own custom integrations for [n8n](https://n8n.io). It includes the node linter and other dependencies.
+It is no-code solution for [getWorkflowStaticData](https://docs.n8n.io/code/cookbook/builtin/get-workflow-static-data/) where you practically required to write JavaScript and you overall lose declarative approach of your workflows.
 
-To make your custom node available to the community, you must create it as an npm package, and [submit it to the npm registry](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry).
+## Feature demo
+
+![image.gif](image.gif)
+
+## Key Features
+
+*   **Set Value:** Store a string or JSON object associated with a unique key.
+*   **Get Value:** Retrieve a stored value using its key.
+*   **Clear Value:** Remove a specific key-value pair from the store.
+*   **Clear All:** Remove all key-value pairs from the store.
+*   Configurable output for Set/Clear operations (pass through input or output status).
 
 ## Prerequisites
 
-You need the following installed on your development machine:
+*   An active n8n instance.
 
-* [git](https://git-scm.com/downloads)
-* Node.js and pnpm. Minimum version Node 20. You can find instructions on how to install both using nvm (Node Version Manager) for Linux, Mac, and WSL [here](https://github.com/nvm-sh/nvm). For Windows users, refer to Microsoft's guide to [Install NodeJS on Windows](https://docs.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-windows).
-* Install n8n with:
-  ```
-  npm install n8n -g
-  ```
-* Recommended: follow n8n's guide to [set up your development environment](https://docs.n8n.io/integrations/creating-nodes/build/node-development-environment/).
+## Installation
 
-## Using this starter
+If this node is not part of the core n8n nodes, follow these steps to install it as a community node:
 
-These are the basic steps for working with the starter. For detailed guidance on creating and publishing nodes, refer to the [documentation](https://docs.n8n.io/integrations/creating-nodes/).
+ - Go to "Settings" -> "Community nodes"
+ - Click "Install"
+ - Enter "n8n-nodes-datastore"
+ - Ack security risks and proceed with the installation
 
-1. [Generate a new repository](https://github.com/n8n-io/n8n-nodes-starter/generate) from this template repository.
-2. Clone your new repo:
-   ```
-   git clone https://github.com/<your organization>/<your-repo-name>.git
-   ```
-3. Run `npm i` to install dependencies.
-4. Open the project in your editor.
-5. Browse the examples in `/nodes` and `/credentials`. Modify the examples, or replace them with your own nodes.
-6. Update the `package.json` to match your details.
-7. Run `npm lint` to check for errors or `npm lintfix` to automatically fix errors when possible.
-8. Test your node locally. Refer to [Run your node locally](https://docs.n8n.io/integrations/creating-nodes/test/run-node-locally/) for guidance.
-9. Replace this README with documentation for your node. Use the [README_TEMPLATE](README_TEMPLATE.md) to get started.
-10. Update the LICENSE file to use your details.
-11. [Publish](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry) your package to npm.
+Later on you will find this node under the name "Datastore" in the modes search box.
 
-## More information
+## Important Considerations & Limitations
 
-Refer to our [documentation on creating nodes](https://docs.n8n.io/integrations/creating-nodes/) for detailed information on building your own nodes.
+ - **In-Memory Storage**: All data stored using this node resides in the RAM of the n8n process. If n8n is restarted, all data in this store will be lost.
+ - **Single Process Scope**: If you are running n8n in a scaled environment with multiple worker processes, this in-memory store will not be shared between these workers. Each worker process will have its own isolated instance of the Datastore.memoryStore. This node is most effective when n8n is running as a single process.
+ - **Memory Consumption**: Storing very large amounts of data or a very large number of keys can consume significant server memory. Use with caution for large datasets.
+ - **Use Cases: Best suited for**:
+   - Temporary data sharing within a single, complex workflow execution.
+   - Passing small pieces of information between different workflow executions if n8n is running as a single process and restarts are infrequent.
+   - Simple caching mechanisms where data loss on restart is acceptable.
+ - **Not a Database Replacement**: For persistent storage, reliable inter-process communication, or robust data management, use a proper database (e.g., PostgreSQL, MySQL, Redis) with its corresponding n8n node.
 
 ## License
 
