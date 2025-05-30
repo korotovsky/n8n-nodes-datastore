@@ -36,8 +36,10 @@ export class Datastore implements INodeType {
 
 		if (operation === 'clearAll') {
 			Datastore.memoryStore.clear();
-			if (items.length === 0 && outputForSetClear === 'status') {
-				returnData.push({ json: { success: true, operation: 'clearAll' } });
+			if (items.length === 0) {
+				if (outputForSetClear === 'status' || outputForSetClear === 'affectedValue') { // Treat affectedValue like status for clearAll
+					returnData.push({ json: { success: true, operation: 'clearAll' } });
+				}
 				return [returnData];
 			}
 		}
@@ -76,6 +78,8 @@ export class Datastore implements INodeType {
 
 					if (outputForSetClear === 'status') {
 						returnData.push({ json: { success: true, operation: 'set', key: keyName }, pairedItem: { item: i } });
+					} else if (outputForSetClear === 'affectedValue') {
+						returnData.push({ json: { success: true, operation: 'set', value: valueToStore }, pairedItem: { item: i } });
 					} else {
 						returnData.push(items[i]);
 					}
@@ -100,14 +104,24 @@ export class Datastore implements INodeType {
 					if (!keyName) {
 						throw new NodeOperationError(this.getNode(), 'Key Name is required for "Clear" operation.', { itemIndex: i });
 					}
+					let valueBeforeClear: any = null;
+					let keyExisted = false;
+					if (outputForSetClear === 'affectedValue' && Datastore.memoryStore.has(keyName)) {
+						valueBeforeClear = Datastore.memoryStore.get(keyName);
+						keyExisted = true;
+					}
+
 					const cleared = Datastore.memoryStore.delete(keyName);
+
 					if (outputForSetClear === 'status') {
 						returnData.push({ json: { success: true, operation: 'clear', key: keyName, cleared }, pairedItem: { item: i } });
+					} else if (outputForSetClear === 'affectedValue') {
+						returnData.push({ json: { operation: 'clear', key: keyName, value: keyExisted ? valueBeforeClear : null, cleared }, pairedItem: { item: i } });
 					} else {
 						returnData.push(items[i]);
 					}
 				} else if (operation === 'clearAll') {
-					if (outputForSetClear === 'status') {
+					if (outputForSetClear === 'status' || outputForSetClear === 'affectedValue') { // Treat affectedValue like status for clearAll
 						returnData.push({ json: { success: true, operation: 'clearAll' }, pairedItem: { item: i } });
 					} else {
 						returnData.push(items[i]);

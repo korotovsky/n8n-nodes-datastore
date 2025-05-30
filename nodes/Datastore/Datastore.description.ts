@@ -110,14 +110,19 @@ export const datastoreNodeFields: INodeProperties[] = [
 		type: 'options',
 		options: [
 			{
-				name: 'Pass Through Input Data',
+				name: 'Pass Through',
 				value: 'passThrough',
-				description: 'Outputs the same data it received as input',
+				description: 'Outputs the same data it received as input in full.',
 			},
 			{
-				name: 'Output Status',
+				name: 'Output Key',
 				value: 'status',
-				description: 'Outputs a success status message',
+				description: 'Outputs only status, operation and key.',
+			},
+			{
+				name: 'Output Value',
+				value: 'affectedValue',
+				description: "Outputs only status, operation and saved value.",
 			},
 		],
 		default: 'passThrough',
