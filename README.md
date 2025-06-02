@@ -6,7 +6,7 @@ It is no-code solution for `getWorkflowStaticData()`, Complex round-robin ping-p
 
 ## Feature demo
 
-![image.gif](image.gif)
+![image.gif](images/image.gif)
 
 ## Key Features
 
@@ -42,6 +42,14 @@ Later on you will find this node under the name "Datastore" in the modes search 
 - [Set a value and update each time the workflow runs](https://community.n8n.io/t/set-a-value-and-update-each-time-the-workflow-runs/35083)
 - [How can I share a variable between two workflows in n8n?](https://community.n8n.io/t/how-can-i-share-a-variable-between-two-workflows-in-n8n/102094)
 - ... :D
+
+## FAQ
+
+ - How to reference all input values (table data, JSON-array) and save it into specified key?
+   - You have to Select type `Value Data Type` = `JSON` and in `Value` make expression something like `{{ $json }}`. See the screenshot below:
+     <details><summary>How to store entire input as JSON</summary>
+     <img src="images/howto-1.png">
+</details>
 
 ## Important Considerations & Limitations
 
