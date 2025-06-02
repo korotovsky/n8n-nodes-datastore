@@ -138,4 +138,4 @@ export const datastoreNodeFields: INodeProperties[] = [
 		},
 		description: 'Define what the node should output after a Set or Clear operation',
 	},
-]
+];

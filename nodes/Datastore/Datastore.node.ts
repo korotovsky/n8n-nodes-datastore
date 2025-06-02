@@ -45,36 +45,47 @@ export class Datastore implements INodeType {
 		}
 
 		if (operation === 'set' && items.length > 1) {
-			const keyName = this.getNodeParameter('keyName', 0, '') as string;
-			if (!keyName) {
-				throw new NodeOperationError(this.getNode(), 'Key Name is required for "Set" operation.');
+			const firstKeyName = this.getNodeParameter('keyName', 0, '') as string;
+			if (!firstKeyName) {
+				throw new NodeOperationError(this.getNode(), 'Key Name is required for "Set" operation when processing multiple items for a single key.');
 			}
+			const firstValueDataType = this.getNodeParameter('valueDataType', 0, 'string') as string;
 
-			const valueDataType = this.getNodeParameter('valueDataType', 0, 'string') as string;
-
-			let storeAsArray = true;
+			let storeAsArrayForKey = true;
 			for (let i = 1; i < items.length; i++) {
 				const currentKeyName = this.getNodeParameter('keyName', i, '') as string;
-				if (currentKeyName !== keyName) {
-					storeAsArray = false;
+				const currentValueDataType = this.getNodeParameter('valueDataType', i, 'string') as string;
+				if (currentKeyName !== firstKeyName || currentValueDataType !== firstValueDataType) {
+					storeAsArrayForKey = false;
 					break;
 				}
 			}
 
-			if (storeAsArray && valueDataType === 'json') {
-				const inputArray = items.map(item => item.json);
-				Datastore.memoryStore.set(keyName, inputArray);
+			if (storeAsArrayForKey && firstValueDataType === 'json') {
+				const inputArray = [];
+				for (let i = 0; i < items.length; i++) {
+					const jsonString = this.getNodeParameter('valueJson', i, '') as string;
+					try {
+						inputArray.push(jsonString);
+					} catch (error) {
+						throw new NodeOperationError(
+							this.getNode(),
+							`Invalid JSON provided for key "${firstKeyName}" in item ${i}: ${error.message}`,
+							{ itemIndex: i },
+						);
+					}
+				}
+				Datastore.memoryStore.set(firstKeyName, inputArray);
 
 				if (outputForSetClear === 'status') {
-					returnData.push({ json: { success: true, operation: 'set', key: keyName, itemCount: items.length } });
+					returnData.push({ json: { success: true, operation: 'set', key: firstKeyName, itemCount: items.length } });
 				} else if (outputForSetClear === 'affectedValue') {
 					returnData.push({ json: { success: true, operation: 'set', value: inputArray } });
 				} else if (outputForSetClear === 'affectedValueOnly') {
-					returnData.push({ json: { [keyName]: inputArray } });
+					returnData.push({ json: { [firstKeyName]: inputArray } });
 				} else {
 					returnData.push(...items);
 				}
-
 				return [returnData];
 			}
 		}
@@ -120,17 +131,25 @@ export class Datastore implements INodeType {
 					} else {
 						returnData.push(items[i]);
 					}
-
 				} else if (operation === 'get') {
 					if (!keyName) {
 						throw new NodeOperationError(this.getNode(), 'Key Name is required for "Get" operation.', { itemIndex: i });
 					}
 					if (Datastore.memoryStore.has(keyName)) {
 						const retrievedValue = Datastore.memoryStore.get(keyName);
-						returnData.push({
-							json: { key: keyName, value: retrievedValue, found: true },
-							pairedItem: { item: i },
-						});
+						if (Array.isArray(retrievedValue)) {
+							retrievedValue.forEach(val => {
+								returnData.push({
+									json: { key: keyName, value: val, found: true },
+									pairedItem: { item: i },
+								});
+							});
+						} else {
+							returnData.push({
+								json: { key: keyName, value: retrievedValue, found: true },
+								pairedItem: { item: i },
+							});
+						}
 					} else {
 						returnData.push({
 							json: { key: keyName, value: null, found: false },
