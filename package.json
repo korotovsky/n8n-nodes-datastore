@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-datastore",
-  "version": "0.1.16",
+  "version": "0.1.17",
   "description": "Datastore for n8n within the workflow",
   "keywords": [
     "n8n-community-node-package"
