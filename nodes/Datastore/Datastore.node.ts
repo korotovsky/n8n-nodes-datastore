@@ -44,6 +44,41 @@ export class Datastore implements INodeType {
 			}
 		}
 
+		if (operation === 'set' && items.length > 1) {
+			const keyName = this.getNodeParameter('keyName', 0, '') as string;
+			if (!keyName) {
+				throw new NodeOperationError(this.getNode(), 'Key Name is required for "Set" operation.');
+			}
+
+			const valueDataType = this.getNodeParameter('valueDataType', 0, 'string') as string;
+
+			let storeAsArray = true;
+			for (let i = 1; i < items.length; i++) {
+				const currentKeyName = this.getNodeParameter('keyName', i, '') as string;
+				if (currentKeyName !== keyName) {
+					storeAsArray = false;
+					break;
+				}
+			}
+
+			if (storeAsArray && valueDataType === 'json') {
+				const inputArray = items.map(item => item.json);
+				Datastore.memoryStore.set(keyName, inputArray);
+
+				if (outputForSetClear === 'status') {
+					returnData.push({ json: { success: true, operation: 'set', key: keyName, itemCount: items.length } });
+				} else if (outputForSetClear === 'affectedValue') {
+					returnData.push({ json: { success: true, operation: 'set', value: inputArray } });
+				} else if (outputForSetClear === 'affectedValueOnly') {
+					returnData.push({ json: { [keyName]: inputArray } });
+				} else {
+					returnData.push(...items);
+				}
+
+				return [returnData];
+			}
+		}
+
 		for (let i = 0; i < items.length; i++) {
 			const keyName = operation !== 'clearAll' ? (this.getNodeParameter('keyName', i, '') as string) : '';
 
